@@ -1,0 +1,24 @@
+{
+  "name": "myblog",
+  "version": "1.0.0",
+  "description": "yazilim yapimi odev",
+  "type": "commonjs",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app.js"
+  },
+  "author": "Muhammet Aydin",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "express-fileupload": "^1.5.0",
+    "express-handlebars": "^7.1.2",
+    "express-session": "^1.18.0",
+    "mongoose": "^8.3.4"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.0"
+  }
+}
