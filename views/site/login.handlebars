@@ -1,0 +1,71 @@
+<div class="logReg">
+    <img src="/img/background/login.jpg" alt="register">
+    <form id="login">
+
+
+        <div class="formGroup">
+            <input name="username" type="text" required>
+            <span>Username *</span>
+        </div>
+
+        <div class="formGroup">
+            <input name="password" type="text" required>
+            <span>Password *</span>
+        </div>
+
+        <div class="btnGroup">
+            <a href="/register">Dont you have an account?</a>
+            <a href="/forgotPassword">Forgot Password?</a>
+            <button>Login</button>
+        </div>
+    </form>
+    <div class="message">
+    <p id="loginMassage">
+
+    </p>
+</div>
+</div>
+
+
+
+
+
+<script>
+    const login = document.getElementById('login')
+    const loginMessage = document.getElementById('loginMassage')
+    const clearMessageForlogin = () => {
+        setTimeout(() => {
+            loginMessage.innerHTML = ''
+        }, 1000 * 8)
+    }
+
+
+    login.addEventListener('submit', (e) => {
+        e.preventDefault()
+        const formData = new FormData(e.target)
+
+
+        fetch('/login', {
+            method: 'post',
+            body: formData,
+        }).then(response => response.json()).then(res => {
+            console.log(res)
+            if (res.case) {
+
+                console.log('giris yaptı')
+                loginMessage.style.color = '#A5DD9B';
+                loginMessage.innerHTML = res.message
+                setTimeout(() => {
+                    window.location.href = '/'
+                }, 1000 * 2)
+            }
+            else {
+                console.log('giris olmadı')
+                loginMessage.style.color = '#FF9B9B';
+                loginMessage.innerHTML = res.message
+                clearMessageForlogin()
+            }
+        })
+
+    })
+</script>

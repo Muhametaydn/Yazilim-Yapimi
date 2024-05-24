@@ -18,6 +18,7 @@ const path = require('path') //default olarak gelen bir paket, kendı yazdıgım
 const dbs = require(path.join(__dirname , 'dbs.js'))
 
 const crypto =  require('crypto')
+const { nextTick } = require('process')
 
 const SECRET_VALUE = process.env.SECRET_VALUE || 'myBlog'
 
@@ -46,7 +47,7 @@ const time = 1000*60*30
 
 app.engine('handlebars' , engine())
 app.set('view engine' , 'handlebars' )
-app.set('view',path.join(__dirname , 'views'))
+app.set('views',path.join(__dirname , 'views'))
 
 
 //middleware arayazılım
@@ -60,6 +61,45 @@ app.use(expressSession({
 }))
 
 app.use(express.static(path.join(__dirname,'public')))
+
+
+
+//* router tanımladıgım alan
+const indexPage =require(path.join(__dirname, 'router','indexPage.js'))
+const loginPage =require(path.join(__dirname, 'router','loginPage.js'))
+const registerPage =require(path.join(__dirname, 'router','registerPage.js'))
+const addPage = require(path.join(__dirname,'router','addPage.js'))
+const logoutPage = require(path.join(__dirname,'router','logoutPage.js'))
+const errorPage = require(path.join(__dirname,'router','errorPage.js'))
+const exam = require(path.join(__dirname,'router','exam.js'))
+const forgotPassword = require(path.join(__dirname,'router','forgotPassword.js'))
+app.use('/',(req,res,next)=>{
+    const {userID} = req.session
+    //req.session.userID = '664e68b9a6d6005773078eb4'
+    if(userID){
+        res.locals.user = true
+    }
+    else{
+        res.locals.user = false
+    }
+    next()
+})
+
+
+
+//* router kullandıgım alan
+app.use('/',indexPage)
+app.use('/login',loginPage)
+app.use('/register',registerPage)
+app.use('/add',addPage)
+app.use('/logout',logoutPage)
+app.use('/error',errorPage)
+app.use('/exam',exam)
+app.use('/forgotPassword',forgotPassword)
+app.use('*',(req,res,next)=>{
+    res.render('site/error')
+})
+
 
 app.listen(PORT,()=>{
     console.log(`Server is running ${API_URL}`)

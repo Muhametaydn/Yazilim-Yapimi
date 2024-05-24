@@ -1,0 +1,35 @@
+<div class="topbar">
+    <div class="wrapper target">
+
+        <div class="left">
+            <a href="https://www.youtube.com/watch?v=U0LCBPeHAO4" class="fa-brands fa-youtube"></a>
+            <a href="https://www.instagram.com/muhametaydn/" class="fa-brands fa-square-instagram"></a>
+
+        </div>
+        <div class="center">
+            <a href="/">HOW TO PLAY</a>
+            {{#unless user}}
+            
+            <a href="/login">LOGİN</a>
+            <a href="/register">REGİSTER</a>
+            {{/unless}}
+            {{#if user}}
+            <a href="/exam">EXAM</a>
+            <a href="/add">ADD</a>
+            <a href="/logout">LOGOUT</a>
+            {{/if}}
+        </div>
+        <div class="right">
+
+            {{#if user}}
+            <span>
+                <img src="/img/user/user-1.png" alt="">
+            </span>
+            {{/if}}
+
+
+
+        </div>
+    </div>
+
+</div>

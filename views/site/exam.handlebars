@@ -1,0 +1,150 @@
+
+
+<div class="exam">
+<img src="/img/background/register.jpg" alt="add">
+    <form id="examForm">
+        <div class="label">
+            <p id="word"></p>
+        </div>
+        <div>
+            <img src="/img/background/elma.jpg" alt="examImg" id="examImage">
+        </div>
+        <div class="formGroup">
+            <input name="turkish" type="text" required>
+            <span>Turkçesini Giriniz *</span>
+        </div>
+        <div class="label">
+            <p id="sentence"></p>
+        </div>
+        <div class="formGroup">
+            <input name="sentence" type="text" required>
+            <span>Türkçe Karşılıgını  Giriniz *</span>
+        </div>
+
+        <div class="btnGroup">
+            <button>Gönder</button>
+        </div>
+
+    </form>
+    
+</div>
+
+<script>
+    const wordImage = document.getElementById('examImage')
+    const word = document.getElementById('word')
+    const sentence = document.getElementById('sentence')
+    const count = 5;
+    
+    const randomWords = [];
+    let currentWord;
+
+    function getRandomIndexes(arrayLength, count) {
+    const indexes = [];
+    while (indexes.length < count) {
+        const randomIndex = Math.floor(Math.random() * arrayLength);
+        if (!indexes.includes(randomIndex)) {
+            indexes.push(randomIndex);
+        }
+    }
+    return indexes;
+}
+
+    document.addEventListener("DOMContentLoaded", async function() {
+
+
+    try {
+        const response = await fetch(`/exam/quiz`); // Endpoint'e GET isteği yapılıyor
+       
+        console.log("send")
+        const words = await response.json(); // Gelen veri JSON formata çevriliyor
+       if(count >= words.length) {
+        console.log("count sayisi daha kucuk olmali")
+       }
+        const indexes = getRandomIndexes(words.length, count)
+        
+        for (const index of indexes) {
+            randomWords.push(words[index])
+        }
+
+        nextWord()
+
+    } catch (error) {
+        console.error("Hata oluştu:", error);
+    }
+});
+
+
+    function submitWord(arrayLength, count) {
+    const indexes = [];
+    while (indexes.length < count) {
+        const randomIndex = Math.floor(Math.random() * arrayLength);
+        if (!indexes.includes(randomIndex)) {
+            indexes.push(randomIndex);
+        }
+    }
+    return indexes;
+}
+
+function finishGame() {
+    console.log("finished")
+    window.location.href="/"
+}
+
+function nextWord() {
+    if( randomWords.length == 0) {
+    finishGame()
+}
+    examForm.reset()
+    currentWord = randomWords.pop()
+    word.innerText = currentWord.english
+    wordImage.src = currentWord.image;
+    sentence.innerText = currentWord.sentenceEnglish
+}
+
+const examForm = document.getElementById('examForm')
+
+examForm.addEventListener('submit', (e) => {
+    let isCorrect = false;
+        e.preventDefault()
+   const formData = new FormData(e.target); // Form verilerini al
+
+    // FormData içeriğini bir objeye dönüştür
+    const formDataObject = {};
+    for (const [key, value] of formData.entries()) {
+        formDataObject[key] = value;
+    }
+
+    // Şimdi formDataObject içeriğini bir değişkene kaydedebilir veya başka bir işlem yapabiliriz
+    if(currentWord.turkish == formDataObject.turkish && currentWord.sentencesTurkish == formDataObject.sentence) {
+    isCorrect = true; 
+    }
+
+        
+        const body = {
+            wordId: currentWord._id,
+            isCorrect
+        }
+        console.log(body)
+
+        fetch('/exam/result', {
+            method: 'post',
+                headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    },
+            body:JSON.stringify(body),
+        }).then(response => response.json()).then(res => {
+nextWord()
+        })
+
+        
+
+    })
+
+
+
+</script>
+
+
+
+

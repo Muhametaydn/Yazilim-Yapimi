@@ -1,0 +1,121 @@
+
+
+
+
+
+
+
+<div class="add">
+<div class="message">
+<p id="addFormMassage">
+
+</p>
+</div>
+
+
+    <img src="/img/background/register.jpg" alt="add">
+    <form id="addForm">
+        <div class="formGroup">
+            <input name="group" type="text" required>
+            <span>Kelimenin Grup İsmini Girin *</span>
+        </div>
+        <div class="formGroup">
+            <input name="turkish" type="text" required>
+            <span>Türkçe Kelimenizi Giriniz *</span>
+        </div>
+
+        <div class="formGroup">
+            <input name="english" type="text" required>
+            <span>İngilizce Kelimenizi Giriniz *</span>
+        </div>
+
+        <div class="formGroup">
+            <input name="sentenceEnglish" type="text" required>
+            <span>İngilizce cümle girin *</span>
+        </div>
+
+        <div class="formGroup">
+            <input name="sentencesTurkish" type="text" required>
+            <span>İngilizce kelimenin türkçesini girin*</span>
+        </div>
+
+        
+
+
+
+        <div class="formGroup">
+             <input type="file" name="resimDosyasi" id="resimDosyasiInput" accept="image/*">
+            <span>kelime ile ilgili resmi yükleyin *</span>
+        </div>
+
+        
+
+        <div class="btnGroup">
+            <button>Gönder</button>
+        </div>
+
+    </form>
+    {{!-- <div class="message">
+        <p id="addFormMassage">
+
+        </p>
+    </div> --}}
+</div>
+
+
+<script>
+    const addForm = document.getElementById('addForm')
+    const addFormMessage = document.getElementById('addFormMassage')
+   const resimDosyasiInput = document.getElementById('resimDosyasiInput');
+    const clearMessageForaddForm = () => {
+        setTimeout(() => {
+            addFormMessage.innerHTML = ''
+        }, 1000 * 8)
+    }
+
+    function getBase64FromFile(file) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = error => reject(error);
+    });
+}
+
+
+    addForm.addEventListener('submit', async (e) => {
+        e.preventDefault()
+        const formData = new FormData(e.target)
+
+         if (resimDosyasiInput.files.length > 0) {
+           
+           const base64Data = await getBase64FromFile(resimDosyasiInput.files[0]);
+           console.log(base64Data)
+            formData.append('image', base64Data);
+        }
+
+
+        fetch('/add', {
+            method: 'post',
+            body: formData,
+        }).then(response => response.json()).then(res => {
+            
+            if (res.case) {
+
+                
+                addFormMessage.style.color = '#A5DD9B';
+                addFormMessage.innerHTML = res.message
+                setTimeout(() => {
+                    window.location.href = '/add'
+                }, 500 * 1)
+            }
+            else {
+                
+                addFormMessage.style.color = '#FF9B9B';
+                addFormMessage.innerHTML = res.message
+               clearMessageForaddForm()
+            }
+        })
+
+    })
+</script>
